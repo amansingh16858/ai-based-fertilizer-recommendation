@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "author": "AgroVeda AI Team",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "soil_pot", "top": 120, "left": -120, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht", "top": -80, "left": -120, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:GND.1", "soil_pot:GND", "black", [ "v0" ] ],
+    [ "esp:3V3", "soil_pot:VCC", "red", [ "v0" ] ],
+    [ "esp:34", "soil_pot:SIG", "green", [ "v0" ] ],
+    [ "esp:GND.2", "dht:GND", "black", [ "v0" ] ],
+    [ "esp:3V3", "dht:VCC", "red", [ "v0" ] ],
+    [ "esp:13", "dht:SDA", "blue", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}

@@ -1,0 +1,421 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+:root {
+  --chassis-bg: #FAFAFA;
+  --stage-bg: #FAFAFA;
+  --stage-border: rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+  --chassis-bg: #090A0D;
+  --stage-bg: #090A0D;
+  --stage-border: rgba(255, 255, 255, 0.08);
+}
+
+/* 4-Sided Monolithic Hardware Chassis (Now aligned with canvas) */
+.bg-monolith-chassis {
+  background-color: var(--chassis-bg);
+}
+
+.dark .bg-monolith-chassis {
+  background-color: #090A0D;
+}
+
+/* Luminous Inset Viewport Stage */
+.bg-luminous-stage {
+  background-color: var(--stage-bg);
+}
+
+.dark .bg-luminous-stage {
+  background-color: #090A0D;
+}
+
+/* Backward-compatible canvas alias */
+.bg-ambient-canvas {
+  background-color: var(--chassis-bg);
+}
+.dark .bg-ambient-canvas {
+  background-color: #070809;
+}
+
+/* Precision Subtle Architectural Grid */
+.blueprint-grid {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+}
+
+.dark .blueprint-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* 120 FPS Native View Transitions (Circular Radial Wavefront Reveal) */
+::view-transition-group(root) {
+  animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999999;
+}
+
+/* Modern Pill Toggle Styling */
+.toggle-pill {
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom Modern Botanical Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(5, 150, 105, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(5, 150, 105, 0.5);
+}
+
+/* Tier-1 Holographic Optical Laser Sweep */
+@keyframes laserSweep {
+  0% {
+    top: 0%;
+    opacity: 0.7;
+  }
+  50% {
+    top: calc(100% - 2px);
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.7;
+  }
+}
+
+.animate-laser-sweep {
+  animation: laserSweep 3s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@keyframes opticalPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+.animate-optical-pulse {
+  animation: opticalPulse 2s ease-in-out infinite;
+}
+
+@keyframes scannerGlitchHaze {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.22; }
+}
+
+.animate-scanner-grid {
+  animation: scannerGlitchHaze 2.5s ease-in-out infinite alternate;
+}
+
+/* Botanical Sprout Bloom Entrance */
+@keyframes sproutBloomLeft {
+  0% { transform: scale(0.2) rotate(-35deg); opacity: 0; }
+  60% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes sproutBloomRight {
+  0% { transform: scale(0.2) rotate(35deg); opacity: 0; }
+  60% { transform: scale(1.1) rotate(-5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.animate-sprout-left {
+  transform-origin: 16px 28px;
+  animation: sproutBloomLeft 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-sprout-right {
+  transform-origin: 16px 28px;
+  animation: sproutBloomRight 0.85s 0.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Optical Camera Viewfinder Reticle Pulse */
+@keyframes reticlePulse {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+.animate-reticle-pulse {
+  animation: reticlePulse 3s ease-in-out infinite;
+}
+
+/* Corner Bracket Viewfinder Blink on Lock */
+@keyframes cornerBreathe {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; filter: drop-shadow(0 0 4px rgba(184, 242, 52, 0.6)); }
+}
+
+.animate-corner-breathe {
+  animation: cornerBreathe 2.5s ease-in-out infinite;
+}
+
+/* Botanical Theme Sweep Reveal Keyframes (Hardware-Accelerated Prismatic Lens) */
+@keyframes botanicalSweepMask {
+  0% {
+    clip-path: circle(0px at var(--sweep-x, 90%) var(--sweep-y, 40px));
+    opacity: 1;
+  }
+  45% {
+    clip-path: circle(120vmax at var(--sweep-x, 90%) var(--sweep-y, 40px));
+    opacity: 1;
+  }
+  75% {
+    clip-path: circle(180vmax at var(--sweep-x, 90%) var(--sweep-y, 40px));
+    opacity: 1;
+  }
+  100% {
+    clip-path: circle(180vmax at var(--sweep-x, 90%) var(--sweep-y, 40px));
+    opacity: 0;
+  }
+}
+
+/* Frosted Glass Dew Evaporation */
+@keyframes frostedDewDissipate {
+  0% {
+    opacity: 1;
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+  }
+  75% {
+    opacity: 1;
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+    -webkit-backdrop-filter: blur(0px) saturate(100%);
+  }
+}
+
+/* VisionOS Prismatic Eclipse: Caustic Wavefront Shockwave */
+@keyframes causticWaveExpansion {
+  0% {
+    transform: translate(-50%, -50%) scale(0.01);
+    opacity: 0.95;
+  }
+  42% {
+    transform: translate(-50%, -50%) scale(0.62);
+    opacity: 0.85;
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.25);
+    opacity: 0;
+  }
+}
+
+/* VisionOS Prismatic Eclipse: Origin Aperture Flare */
+@keyframes originApertureFlare {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Optical Lens Wake-up / Cinematic Pull-Focus Dew Dissolve (700ms) */
+@keyframes opticalLensWakeup {
+  0% {
+    opacity: 1;
+    backdrop-filter: blur(18px) saturate(135%);
+    -webkit-backdrop-filter: blur(18px) saturate(135%);
+  }
+  24% {
+    opacity: 1;
+    backdrop-filter: blur(16px) saturate(135%);
+    -webkit-backdrop-filter: blur(16px) saturate(135%);
+  }
+  68% {
+    opacity: 0.85;
+    backdrop-filter: blur(6px) saturate(120%);
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+    -webkit-backdrop-filter: blur(0px) saturate(100%);
+  }
+}
+
+/* ========================================================================= */
+/* LIVING ORGANISM: BIOLUMINESCENT PLANT EMBLEM ANIMATIONS                   */
+/* ========================================================================= */
+@keyframes plantSprout {
+  0% {
+    transform: scale(0.65) translateY(4px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12) translateY(-1px);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.96) translateY(0px);
+  }
+  100% {
+    transform: scale(1) translateY(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes plantBreathe {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 0px rgba(16, 185, 129, 0));
+  }
+  50% {
+    transform: scale(1.05) rotate(1.2deg);
+    filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.4));
+  }
+}
+
+@keyframes plantAuraPulse {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes leafFlutterLeft {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-3deg) scale(1.03);
+  }
+}
+
+@keyframes leafFlutterRight {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2.5deg) scale(1.04);
+  }
+}
+
+.animate-plant-sprout {
+  animation: plantSprout 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-plant-breathe {
+  animation: plantBreathe 6.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-plant-aura {
+  animation: plantAuraPulse 6.5s ease-in-out infinite;
+}
+
+.animate-leaf-left {
+  animation: leafFlutterLeft 6.5s ease-in-out infinite;
+  transform-origin: 16px 28px;
+}
+
+.animate-leaf-right {
+  animation: leafFlutterRight 6.5s ease-in-out infinite;
+  transform-origin: 16px 28px;
+}
+
+@keyframes laserShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+.animate-shimmer {
+  animation: laserShimmer 1.8s infinite linear;
+}
+
+/* Horizontal Pipeline Photon Flow */
+@keyframes conduitPhoton {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0.2;
+  }
+}
+
+.animate-conduit-flow {
+  animation: conduitPhoton 1.4s ease-in-out infinite;
+}
+
+/* Celebration Beacon Pulse */
+@keyframes celebrationBeacon {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 25px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.animate-celebration-beacon {
+  animation: celebrationBeacon 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}

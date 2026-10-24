@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.*
+apis.txt
+scratch_extracted_slides.txt
+.DS_Store

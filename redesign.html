@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroPulse — Precision Agronomic Diagnostics</title>
+  
+  <!-- Inter & Geist Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* CSS Reset & Design Tokens */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Base Surface & Backgrounds */
+      --bg-base: #F8FAF9;
+      --bg-surface: #FFFFFF;
+      --bg-surface-translucent: rgba(255, 255, 255, 0.88);
+      --bg-subdued: #F0F4F2;
+      --bg-inset: #E8EFE8;
+      
+      /* Strokes & Borders */
+      --border-default: rgba(18, 43, 34, 0.08);
+      --border-subtle: rgba(18, 43, 34, 0.04);
+      --border-active: rgba(16, 185, 129, 0.35);
+      
+      /* Typography Colors */
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      
+      /* Brand & Semantic Accents */
+      --emerald-primary: #059669;
+      --emerald-hover: #047857;
+      --emerald-subtle: #ECFDF5;
+      --emerald-text: #065F46;
+      --emerald-border: #A7F3D0;
+      
+      --lime-accent: #B8F234;
+      --lime-glow: rgba(184, 242, 52, 0.35);
+      
+      --amber-accent: #D97706;
+      --amber-subtle: #FEF3C7;
+      --amber-text: #92400E;
+      
+      --sky-accent: #0284C7;
+      --sky-subtle: #E0F2FE;
+      --sky-text: #075985;
+      
+      /* Elevation */
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.02), 0 8px 24px -4px rgba(10, 30, 20, 0.04);
+      --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.04), 0 16px 32px -6px rgba(10, 30, 20, 0.08);
+      --shadow-primary-btn: 0 4px 14px -2px rgba(5, 150, 105, 0.35), 0 1px 2px rgba(5, 150, 105, 0.2);
+      --shadow-floating: 0 20px 40px -8px rgba(10, 30, 20, 0.12);
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+      --font-serif: 'Newsreader', serif;
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-pill: 9999px;
+    }
+
+    html.dark {
+      --bg-base: #090E0C;
+      --bg-surface: #111815;
+      --bg-surface-translucent: rgba(17, 24, 21, 0.85);
+      --bg-subdued: #17221E;
+      --bg-inset: #0D1411;
+      
+      --border-default: rgba(255, 255, 255, 0.09);
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      --border-active: rgba(52, 211, 153, 0.40);
+      
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      
+      --emerald-primary: #10B981;
+      --emerald-hover: #059669;
+      --emerald-subtle: rgba(16, 185, 129, 0.12);
+      --emerald-text: #6EE7B7;
+      --emerald-border: rgba(52, 211, 153, 0.25);
+      
+      --amber-accent: #F59E0B;
+      --amber-subtle: rgba(245, 158, 11, 0.12);
+      --amber-text: #FCD34D;
+      
+      --sky-accent: #38BDF8;
+      --sky-subtle: rgba(56, 189, 248, 0.12);
+      --sky-text: #BAE6FD;
+      
+      --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+      --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.6), 0 16px 36px -6px rgba(0, 0, 0, 0.7);
+      --shadow-primary-btn: 0 4px 18px -2px rgba(16, 185, 129, 0.45);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-image: 
+        radial-gradient(ellipse at 85% 5%, rgba(5, 150, 105, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 15% 95%, rgba(184, 242, 52, 0.04) 0%, transparent 45%);
+      background-attachment: fixed;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Ambient Subtle Grid Texture */
+    .bg-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, var(--border-subtle) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      height: 64px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background-color: var(--bg-surface-translucent);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-emblem {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      position: relative;
+    }
+
+    .brand-logo-emblem svg {
+      width: 20px;
+      height: 20px;
+      color: #FFFFFF;
+    }
+
+    .brand-status-dot {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--lime-accent);
+      border: 2px solid var(--bg-surface);
+      box-shadow: 0 0 6px var(--lime-accent);
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-ai-chip {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-family: var(--font-mono);
+      background-color: var(--text-primary);
+      color: var(--bg-base);
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+    }
+
+    .probe-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .probe-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+    }
+
+    .probe-status-pill.connected .probe-dot {
+      background-color: var(--emerald-primary);
+      box-shadow: 0 0 6px var(--emerald-primary);
+      animation: pulse 2s infinite;
+    }
+
+    .probe-status-pill.connected {
+      background-color: var(--emerald-subtle);
+      border-color: var(--emerald-border);
+      color: var(--emerald-text);
+      font-weight: 600;
+    }
+
+    .context-selector-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-pill);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .context-selector-btn:hover {
+      background-color: var(--bg-surface);
+      border-color: var(--emerald-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .context-selector-btn .meta-acre {
+      color: var(--text-secondary);
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-action-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .icon-action-btn:hover {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    .lang-select-wrap {
+      position: relative;
+    }
+
+    .lang-select {
+      appearance: none;
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-pill);
+      padding: 6px 28px 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .lang-select:focus {
+      border-color: var(--emerald-primary);
+    }
+
+    .lang-select-wrap svg {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-muted);
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Main Grid Layout */
+    .app-main {
+      flex: 1;
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 28px 48px;
+      display: grid;
+      grid-template-columns: 340px 1.15fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1200px) {
+      .app-main {
+        grid-template-columns: 320px 1fr;
+      }
+      .col-prescription {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .app-main {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+      .col-prescription {
+        grid-column: span 1;
+      }
+      .top-nav {
+        padding: 0 16px;
+      }
+    }
+
+    /* Column Shared Styling */
+    .column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+
+    .step-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--emerald-primary);
+      background-color: var(--emerald-subtle);
+      border: 1px solid var(--emerald-border);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .step-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .step-status-chip {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+    }
+
+    .step-status-chip.active {
+      background-color: var(--emerald-subtle);
+      border-color: var(--emerald-border);
+      color: var(--emerald-text);
+    }
+
+    .step-status-chip.teal {
+      background-color: var(--sky-subtle);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: var(--sky-text);
+    }
+
+    /* Studio Cards */
+    .studio-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .studio-card:hover {
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    /* Column 1: Telemetry HUD */
+    .col-telemetry {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .moisture-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-icon-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sky-subtle);
+      color: var(--sky-accent);
+    }
+
+    .icon-box.amber {
+      background-color: var(--amber-subtle);
+      color: var(--amber-accent);
+    }
+
+    .icon-box.emerald {
+      background-color: var(--emerald-subtle);
+      color: var(--emerald-primary);
+    }
+
+    .card-icon-title h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .card-icon-title p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .status-pill-deficit {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background-color: var(--amber-subtle);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--amber-text);
+    }
+
+    /* Arc Dial Gauge */
+    .gauge-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0 16px;
+    }
+
+    .gauge-svg {
+      width: 150px;
+      height: 150px;
+      transform: rotate(-135deg);
+    }
+
+    .gauge-track {
+      fill: none;
+      stroke: var(--bg-subdued);
+      stroke-width: 10;
+      stroke-dasharray: 282 94;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: var(--lime-accent);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 282 94;
+      stroke-dashoffset: 200;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease;
+    }
+
+    .gauge-center-content {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-value {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .gauge-unit {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      margin-left: 1px;
+    }
+
+    .gauge-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Slider Control */
+    .slider-section {
+      border-top: 1px solid var(--border-default);
+      padding-top: 14px;
+    }
+
+    .slider-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .slider-meta-title {
+      color: var(--text-secondary);
+    }
+
+    .slider-meta-val {
+      font-family: var(--font-mono);
+      color: var(--emerald-primary);
+      font-weight: 700;
+    }
+
+    .custom-range {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-subdued);
+      border-radius: var(--radius-pill);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .custom-range::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--emerald-primary);
+      border: 3px solid var(--bg-surface);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .custom-range::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .slider-ticks {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* Sub-telemetry 2-col grid */
+    .telemetry-subgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .telemetry-mini-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .mini-card-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .mini-card-val {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+
+    .mini-card-unit {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .mini-card-range {
+      margin-top: 10px;
+      height: 4px;
+      width: 100%;
+      background: var(--bg-subdued);
+      border-radius: var(--radius-pill);
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+    }
+
+    .mini-card-range::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-surface);
+      cursor: pointer;
+    }
+
+    .mini-card-range.amber-thumb::-webkit-slider-thumb {
+      background: var(--amber-accent);
+    }
+
+    .mini-card-range.teal-thumb::-webkit-slider-thumb {
+      background: var(--emerald-primary);
+    }
+
+    /* Canopy Microclimate Pill Card */
+    .microclimate-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .microclimate-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: var(--emerald-subtle);
+      color: var(--emerald-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .microclimate-body {
+      flex: 1;
+    }
+
+    .microclimate-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .microclimate-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .microclimate-time {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .microclimate-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    /* Column 2: Diagnostic Leaf Scanner */
+    .col-scanner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .scanner-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .segmented-tabs {
+      display: flex;
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-pill);
+      padding: 3px;
+    }
+
+    .tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: var(--font-sans);
+    }
+
+    .tab-btn.active {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .sample-leaves-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      background-color: var(--emerald-subtle);
+      border: 1px solid var(--emerald-border);
+      color: var(--emerald-text);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sample-leaves-btn:hover {
+      background-color: var(--bg-surface);
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+    }
+
+    /* Viewport Frame */
+    .scanner-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-md);
+      background-color: #060A08;
+      border: 1px solid var(--border-default);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .viewport-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Viewfinder HUD Reticles */
+    .reticle-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: rgba(184, 242, 52, 0.75);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .reticle-tl { top: 16px; left: 16px; border-top: 2px solid; border-left: 2px solid; }
+    .reticle-tr { top: 16px; right: 16px; border-top: 2px solid; border-right: 2px solid; }
+    .reticle-bl { bottom: 16px; left: 16px; border-bottom: 2px solid; border-left: 2px solid; }
+    .reticle-br { bottom: 16px; right: 16px; border-bottom: 2px solid; border-right: 2px solid; }
+
+    /* Laser Scan Animation */
+    .scan-laser-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--lime-accent) 50%, transparent 100%);
+      box-shadow: 0 0 14px var(--lime-accent);
+      z-index: 15;
+      animation: laserSweep 2.4s ease-in-out infinite;
+      display: none;
+    }
+
+    .scanning .scan-laser-line {
+      display: block;
+    }
+
+    @keyframes laserSweep {
+      0% { top: 5%; opacity: 0.2; }
+      50% { top: 90%; opacity: 1; }
+      100% { top: 5%; opacity: 0.2; }
+    }
+
+    /* Bounding Box Chip */
+    .symptom-tag-box {
+      position: absolute;
+      border: 1.5px solid var(--lime-accent);
+      background: rgba(184, 242, 52, 0.12);
+      border-radius: 6px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .symptom-tag-label {
+      position: absolute;
+      top: -12px;
+      left: 4px;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .symptom-tag-label::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: var(--lime-accent);
+    }
+
+    .viewport-footer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+    }
+
+    .sub-action-link {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .sub-action-link:hover {
+      color: var(--text-primary);
+    }
+
+    .detected-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--emerald-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .detected-pill span {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    /* Primary Hero CTA Button */
+    .primary-cta-btn {
+      width: 100%;
+      height: 52px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #B8F234 0%, #A4DE23 100%);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #0B1F13;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(184, 242, 52, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .primary-cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(184, 242, 52, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+    }
+
+    .primary-cta-btn:active {
+      transform: translateY(1px);
+    }
+
+    .cta-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .cta-left .serif-phrase {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .cta-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .cta-shortcut {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: rgba(11, 31, 19, 0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Column 3: Prescription & Action Engine */
+    .col-prescription {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .prescription-card {
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Standby Empty State */
+    .standby-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 24px;
+      height: 100%;
+    }
+
+    .standby-emblem {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      color: var(--emerald-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .standby-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .standby-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      max-width: 280px;
+      line-height: 1.5;
+    }
+
+    /* Active Populated Prescription State */
+    .active-prescription-state {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .rx-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .rx-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background-color: var(--emerald-subtle);
+      border: 1px solid var(--emerald-border);
+      color: var(--emerald-text);
+    }
+
+    .rx-confidence {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--emerald-primary);
+    }
+
+    .rx-diagnosis-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .rx-meta-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    .rx-meta-sub strong {
+      color: var(--text-primary);
+    }
+
+    /* Rationale Bubble */
+    .rx-rationale-box {
+      background-color: var(--emerald-subtle);
+      border: 1px solid var(--emerald-border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .rx-rationale-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--emerald-text);
+    }
+
+    /* Directive Section */
+    .rx-directive-card {
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .rx-directive-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      background-color: var(--sky-subtle);
+      color: var(--sky-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .rx-directive-content h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .rx-directive-content p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* Dosage Tab Switcher */
+    .dosage-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .dosage-heading {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .dosage-item-card {
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dosage-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dosage-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .npk-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--emerald-primary);
+    }
+
+    .dosage-amount-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .dosage-amount-val {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* 14 Day Grid */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .schedule-cell {
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      font-size: 11px;
+    }
+
+    .schedule-day {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--emerald-primary);
+      display: block;
+      margin-bottom: 2px;
+      font-size: 10px;
+    }
+
+    .schedule-task {
+      color: var(--text-secondary);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    /* Prescription Action Footer */
+    .rx-footer-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-default);
+      margin-top: auto;
+    }
+
+    .pdf-save-btn {
+      flex: 1;
+      height: 40px;
+      border-radius: var(--radius-pill);
+      background-color: var(--text-primary);
+      color: var(--bg-base);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pdf-save-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .toolbar-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .toolbar-icon-btn:hover {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--emerald-primary);
+    }
+
+    /* Floating Inspector Badge */
+    .floating-inspector {
+      position: fixed;
+      bottom: 20px;
+      right: 24px;
+      z-index: 40;
+    }
+
+    .inspector-pill-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      background-color: #0A120E;
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow-floating);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.15s ease;
+    }
+
+    .inspector-pill-btn:hover {
+      background-color: #111E18;
+      border-color: var(--lime-accent);
+    }
+
+    .inspector-pill-btn svg {
+      color: var(--lime-accent);
+    }
+
+    /* Modal Sheet */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-sheet {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      max-width: 520px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: var(--shadow-floating);
+      animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sample-leaf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .sample-thumb-card {
+      background: var(--bg-subdued);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+
+    .sample-thumb-card:hover {
+      border-color: var(--emerald-primary);
+      transform: translateY(-2px);
+    }
+
+    .sample-thumb-img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+    }
+
+    .sample-thumb-info {
+      padding: 8px;
+    }
+
+    .sample-crop-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sample-issue {
+      font-size: 9px;
+      color: var(--amber-text);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="bg-grid">
+
+  <!-- 1. Floating Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="brand-cluster">
+      <div class="brand-logo-emblem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+        <span class="brand-status-dot"></span>
+      </div>
+
+      <div class="brand-title">
+        <span>AgroPulse</span>
+        <span class="brand-ai-chip">AI</span>
+      </div>
+
+      <div class="probe-status-pill" id="probeStatusPill">
+        <span class="probe-dot"></span>
+        <span id="probeStatusText">No Probe Attached</span>
+      </div>
+    </div>
+
+    <!-- Center Field Selector Pill -->
+    <button class="context-selector-btn" id="openFieldSettingsBtn">
+      <i data-lucide="sliders" style="width: 14px; height: 14px; color: var(--emerald-primary);"></i>
+      <span id="navCropLabel">Auto-Detect Any Crop</span>
+      <span class="meta-acre">/ 1 Acre</span>
+      <i data-lucide="chevron-down" style="width: 12px; height: 12px; color: var(--text-muted);"></i>
+    </button>
+
+    <!-- Right Controls -->
+    <div class="nav-actions">
+      <button class="icon-action-btn" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+        <i data-lucide="moon" id="themeIcon" style="width: 15px; height: 15px;"></i>
+      </button>
+
+      <div class="lang-select-wrap">
+        <select class="lang-select" aria-label="Language Selector">
+          <option value="en">English</option>
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="ta">தமிழ் (Tamil)</option>
+          <option value="te">తెలుగు (Telugu)</option>
+        </select>
+        <i data-lucide="chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Main Studio 3-Column Workspace -->
+  <main class="app-main">
+
+    <!-- ========================================== -->
+    <!-- COLUMN 1: SOIL & ENVIRONMENT TELEMETRY     -->
+    <!-- ========================================== -->
+    <section class="col-telemetry">
+      <div class="column-header">
+        <div class="step-title-group">
+          <span class="step-badge">01</span>
+          <h2 class="step-title">Soil & Environment</h2>
+        </div>
+        <span class="step-status-chip">Manual Slider Mode</span>
+      </div>
+
+      <!-- Main Soil Moisture Card -->
+      <div class="studio-card">
+        <div class="moisture-card-header">
+          <div class="card-icon-title">
+            <div class="icon-box">
+              <i data-lucide="droplet" style="width: 16px; height: 16px;"></i>
+            </div>
+            <div>
+              <h3>Soil Moisture</h3>
+              <p>Calibrated Rootzone Probe</p>
+            </div>
+          </div>
+          <span class="status-pill-deficit" id="moistureStatusPill">Moisture Deficit</span>
+        </div>
+
+        <!-- High Precision Arc Dial Gauge -->
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 120 120">
+            <circle class="gauge-track" cx="60" cy="60" r="45"></circle>
+            <circle class="gauge-fill" id="gaugeFillArc" cx="60" cy="60" r="45"></circle>
+          </svg>
+          <div class="gauge-center-content">
+            <div class="gauge-value">
+              <span id="gaugeValueDisplay">28.5</span><span class="gauge-unit">%</span>
+            </div>
+            <span class="gauge-label" id="gaugeHumanLabel">DRY</span>
+          </div>
+        </div>
+
+        <!-- Moisture Slider Control -->
+        <div class="slider-section">
+          <div class="slider-meta-row">
+            <span class="slider-meta-title">Soil Moisture Slider</span>
+            <span class="slider-meta-val" id="sliderValDisplay">28.5%</span>
+          </div>
+          <input 
+            type="range" 
+            id="moistureSlider" 
+            min="5" 
+            max="95" 
+            step="0.5" 
+            value="28.5" 
+            class="custom-range"
+          />
+          <div class="slider-ticks">
+            <span>0% DRY</span>
+            <span>50% OPTIMAL</span>
+            <span>100% SATURATED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Telemetry Subgrid -->
+      <div class="telemetry-subgrid">
+        <!-- Temperature Card -->
+        <div class="telemetry-mini-card">
+          <div class="mini-card-head">
+            <i data-lucide="thermometer" style="width: 13px; height: 13px; color: var(--amber-accent);"></i>
+            <span>Temperature</span>
+          </div>
+          <div class="mini-card-val">
+            <span id="tempValDisplay">31.8</span>
+            <span class="mini-card-unit">°C</span>
+          </div>
+          <input 
+            type="range" 
+            id="tempSlider" 
+            min="15" 
+            max="45" 
+            step="0.5" 
+            value="31.8" 
+            class="mini-card-range amber-thumb" 
+          />
+        </div>
+
+        <!-- Humidity Card -->
+        <div class="telemetry-mini-card">
+          <div class="mini-card-head">
+            <i data-lucide="wind" style="width: 13px; height: 13px; color: var(--emerald-primary);"></i>
+            <span>Humidity</span>
+          </div>
+          <div class="mini-card-val">
+            <span id="humidityValDisplay">63.8</span>
+            <span class="mini-card-unit">% RH</span>
+          </div>
+          <input 
+            type="range" 
+            id="humiditySlider" 
+            min="20" 
+            max="95" 
+            step="1" 
+            value="63.8" 
+            class="mini-card-range teal-thumb" 
+          />
+        </div>
+      </div>
+
+      <!-- Microclimate Status -->
+      <div class="microclimate-card">
+        <div class="microclimate-icon">
+          <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+        </div>
+        <div class="microclimate-body">
+          <div class="microclimate-top">
+            <span class="microclimate-title">Optimal Climate</span>
+            <span class="microclimate-time" id="clockDisplay">19:24:03 PM</span>
+          </div>
+          <p class="microclimate-sub">Ambient canopy microclimate is within normal range.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- COLUMN 2: DIAGNOSTIC LEAF SCANNER          -->
+    <!-- ========================================== -->
+    <section class="col-scanner">
+      <div class="column-header">
+        <div class="step-title-group">
+          <span class="step-badge">02</span>
+          <h2 class="step-title">Leaf Scanner</h2>
+        </div>
+        <span class="step-status-chip active">AI Vision</span>
+      </div>
+
+      <div class="studio-card">
+        <!-- Top Tab Controls -->
+        <div class="scanner-controls-row">
+          <div class="segmented-tabs">
+            <button class="tab-btn active" id="tabUpload">
+              <i data-lucide="upload" style="width: 12px; height: 12px;"></i>
+              <span>Upload</span>
+            </button>
+            <button class="tab-btn" id="tabCamera">
+              <i data-lucide="camera" style="width: 12px; height: 12px;"></i>
+              <span>Camera</span>
+            </button>
+            <button class="tab-btn" id="tabProbe">
+              <i data-lucide="wifi" style="width: 12px; height: 12px;"></i>
+              <span>Probe</span>
+            </button>
+          </div>
+
+          <button class="sample-leaves-btn" id="openSamplesBtn">
+            <i data-lucide="sparkles" style="width: 13px; height: 13px;"></i>
+            <span>Sample Leaves</span>
+          </button>
+        </div>
+
+        <!-- High Polish Scanner Viewport -->
+        <div class="scanner-viewport" id="viewportContainer">
+          <!-- Reticle Framing Guides -->
+          <div class="reticle-corner reticle-tl"></div>
+          <div class="reticle-corner reticle-tr"></div>
+          <div class="reticle-corner reticle-bl"></div>
+          <div class="reticle-corner reticle-br"></div>
+
+          <!-- Dynamic Scan Laser -->
+          <div class="scan-laser-line" id="laserBeam"></div>
+
+          <!-- Leaf Image Render -->
+          <img 
+            id="targetLeafImage" 
+            src="https://images.unsplash.com/photo-1592417817098-8f3d6eb22509?auto=format&fit=crop&w=800&q=80" 
+            alt="Leaf Sample for AI Diagnostics" 
+            class="viewport-image" 
+          />
+
+          <!-- Bounding Box Annotation -->
+          <div class="symptom-tag-box" style="left: 28%; top: 32%; width: 44%; height: 42%;">
+            <div class="symptom-tag-label">Interveinal Chlorosis</div>
+          </div>
+        </div>
+
+        <!-- Viewport Bottom Status Bar -->
+        <div class="viewport-footer-actions">
+          <button class="sub-action-link" id="browseFileBtn">
+            <i data-lucide="image" style="width: 13px; height: 13px;"></i>
+            <span>Select Another Photo</span>
+          </button>
+          <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;" />
+
+          <div class="detected-pill" id="leafDetectedPill">
+            <i data-lucide="check-circle-2" style="width: 13px; height: 13px;"></i>
+            <span>Tomato Leaf <i>(96% Certainty)</i></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Action CTA Button -->
+      <button class="primary-cta-btn" id="runDiagnosisBtn">
+        <div class="cta-left">
+          <i data-lucide="zap" style="width: 18px; height: 18px; fill: currentColor;"></i>
+          <span>Run AI <span class="serif-phrase">Diagnosis & Care Plan</span></span>
+        </div>
+        <div class="cta-right">
+          <span>Start</span>
+          <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+          <span class="cta-shortcut">⌘⏎</span>
+        </div>
+      </button>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- COLUMN 3: CROP PRESCRIPTION ACTION ENGINE  -->
+    <!-- ========================================== -->
+    <section class="col-prescription">
+      <div class="column-header">
+        <div class="step-title-group">
+          <span class="step-badge">03</span>
+          <h2 class="step-title">Crop Prescription</h2>
+        </div>
+        <span class="step-status-chip teal">Care Guide Engine</span>
+      </div>
+
+      <div class="studio-card prescription-card">
+        
+        <!-- State A: Standby Idle State -->
+        <div class="standby-state" id="rxStandbyState">
+          <div class="standby-emblem">
+            <i data-lucide="heart-handshake" style="width: 24px; height: 24px;"></i>
+          </div>
+          <h3 class="standby-title">Your Plant Care Plan Will Appear Here</h3>
+          <p class="standby-sub">Take or pick a leaf photo, calibrate moisture, then click <strong>Run AI Diagnosis</strong> to generate the treatment plan.</p>
+        </div>
+
+        <!-- State B: Active Prescription Generated -->
+        <div class="active-prescription-state" id="rxActiveState">
+          
+          <!-- Prescription Heading & Confidence -->
+          <div>
+            <div class="rx-header-row">
+              <span class="rx-badge">
+                <i data-lucide="sparkles" style="width: 12px; height: 12px;"></i>
+                Agronomic Care Plan
+              </span>
+              <span class="rx-confidence">96.4% Certainty</span>
+            </div>
+            <h3 class="rx-diagnosis-title">Early Nitrogen Deficiency & Foliar Chlorosis</h3>
+            <p class="rx-meta-sub">Crop: <strong>Tomato (Solanum lycopersicum)</strong> • Severity: <span style="color: var(--amber-accent); font-weight: 700;">Moderate Deficit</span></p>
+          </div>
+
+          <!-- Rationale Multi-modal Box -->
+          <div class="rx-rationale-box">
+            <div class="rx-rationale-head">
+              <span>💡 MULTI-MODAL DIAGNOSTIC INSIGHT</span>
+              <span style="font-family: var(--font-mono); font-size: 10px;">28.5% ROOT MOISTURE</span>
+            </div>
+            Yellowing lower leaf margins combined with dry 28.5% soil moisture indicates restricted nitrogen assimilation. Foliar feeding with mild root irrigation required.
+          </div>
+
+          <!-- Directive 1: Irrigation -->
+          <div class="rx-directive-card">
+            <div class="rx-directive-icon">
+              <i data-lucide="droplets" style="width: 16px; height: 16px;"></i>
+            </div>
+            <div class="rx-directive-content">
+              <h4>Step 1: Moderate Cycle Irrigation</h4>
+              <p>Apply 1,200L/acre via drip to elevate rootzone moisture to the optimal 55% threshold before fertilizing.</p>
+            </div>
+          </div>
+
+          <!-- Directive 2: Fertilizer Dosage -->
+          <div class="dosage-section">
+            <span class="dosage-heading">Step 2: Recommended Fertilizer Recipe</span>
+            <div class="dosage-item-card">
+              <div class="dosage-item-top">
+                <span class="dosage-name">Calcium Nitrate (15.5-0-0)</span>
+                <span class="npk-badge">NPK 15.5-0-0 + 19% Ca</span>
+              </div>
+              <div class="dosage-amount-row">
+                <span style="color: var(--text-secondary);">Dosage & Method:</span>
+                <span class="dosage-amount-val">2.2 kg / acre • Fertigation Drip</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 14-Day Timeline Schedule -->
+          <div>
+            <span class="dosage-heading" style="display: block; margin-bottom: 8px;">14-Day Recovery Calendar</span>
+            <div class="schedule-grid">
+              <div class="schedule-cell">
+                <span class="schedule-day">DAY 01</span>
+                <span class="schedule-task">Apply Calcium Nitrate + 15 min drip</span>
+              </div>
+              <div class="schedule-cell">
+                <span class="schedule-day">DAY 04</span>
+                <span class="schedule-task">Verify leaf greening; inspect new shoots</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="rx-footer-toolbar">
+            <button class="pdf-save-btn" id="savePdfBtn">
+              <i data-lucide="file-text" style="width: 14px; height: 14px;"></i>
+              <span>SAVE / PRINT CARE PDF</span>
+            </button>
+            <button class="toolbar-icon-btn" title="Share via WhatsApp">
+              <i data-lucide="share-2" style="width: 15px; height: 15px;"></i>
+            </button>
+            <button class="toolbar-icon-btn" title="Copy Prescription">
+              <i data-lucide="copy" style="width: 15px; height: 15px;"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3. Floating AI Architecture Inspector Trigger -->
+  <div class="floating-inspector">
+    <button class="inspector-pill-btn" id="openInspectorBtn">
+      <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
+      <span>AI Architecture Inspector</span>
+    </button>
+  </div>
+
+  <!-- 4. Sample Leaves Modal Dialog -->
+  <div class="modal-overlay" id="samplesModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <h3 class="modal-title">Select Diagnostic Sample</h3>
+        <button class="icon-action-btn" id="closeSamplesModal">
+          <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+        </button>
+      </div>
+      <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+        Choose a verified diseased crop sample to evaluate the multi-modal diagnostic engine.
+      </p>
+
+      <div class="sample-leaf-grid">
+        <div class="sample-thumb-card" data-crop="Tomato" data-issue="Nitrogen Chlorosis" data-moisture="28.5" data-img="https://images.unsplash.com/photo-1592417817098-8f3d6eb22509?auto=format&fit=crop&w=800&q=80">
+          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb22509?auto=format&fit=crop&w=400&q=80" class="sample-thumb-img" alt="Tomato Leaf" />
+          <div class="sample-thumb-info">
+            <div class="sample-crop-name">Tomato</div>
+            <div class="sample-issue">Nitrogen Deficit</div>
+          </div>
+        </div>
+
+        <div class="sample-thumb-card" data-crop="Bell Pepper" data-issue="Bacterial Spot" data-moisture="64.0" data-img="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?auto=format&fit=crop&w=800&q=80">
+          <img src="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?auto=format&fit=crop&w=400&q=80" class="sample-thumb-img" alt="Bell Pepper" />
+          <div class="sample-thumb-info">
+            <div class="sample-crop-name">Bell Pepper</div>
+            <div class="sample-issue">Bacterial Spot</div>
+          </div>
+        </div>
+
+        <div class="sample-thumb-card" data-crop="Cotton" data-issue="Magnesium Deficit" data-moisture="22.0" data-img="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=800&q=80">
+          <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=400&q=80" class="sample-thumb-img" alt="Cotton Leaf" />
+          <div class="sample-thumb-info">
+            <div class="sample-crop-name">Cotton</div>
+            <div class="sample-issue">Magnesium Deficit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Elements
+    const moistureSlider = document.getElementById('moistureSlider');
+    const gaugeValueDisplay = document.getElementById('gaugeValueDisplay');
+    const sliderValDisplay = document.getElementById('sliderValDisplay');
+    const gaugeFillArc = document.getElementById('gaugeFillArc');
+    const moistureStatusPill = document.getElementById('moistureStatusPill');
+    const gaugeHumanLabel = document.getElementById('gaugeHumanLabel');
+    const tempSlider = document.getElementById('tempSlider');
+    const tempValDisplay = document.getElementById('tempValDisplay');
+    const humiditySlider = document.getElementById('humiditySlider');
+    const humidityValDisplay = document.getElementById('humidityValDisplay');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const runDiagnosisBtn = document.getElementById('runDiagnosisBtn');
+    const viewportContainer = document.getElementById('viewportContainer');
+    const rxStandbyState = document.getElementById('rxStandbyState');
+    const rxActiveState = document.getElementById('rxActiveState');
+    const openSamplesBtn = document.getElementById('openSamplesBtn');
+    const closeSamplesModal = document.getElementById('closeSamplesModal');
+    const samplesModal = document.getElementById('samplesModal');
+    const browseFileBtn = document.getElementById('browseFileBtn');
+    const hiddenFileInput = document.getElementById('hiddenFileInput');
+    const targetLeafImage = document.getElementById('targetLeafImage');
+    const navCropLabel = document.getElementById('navCropLabel');
+
+    // Update Arc Gauge UI Function
+    function updateMoistureGauge(val) {
+      gaugeValueDisplay.innerText = val.toFixed(1);
+      sliderValDisplay.innerText = `${val.toFixed(1)}%`;
+      
+      // Circumference calculation for 45 radius arc (approx 282.7px perimeter)
+      // Max arc is 75% of full circle = 212px
+      const maxStroke = 212;
+      const offset = 282 - (val / 100) * maxStroke;
+      gaugeFillArc.style.strokeDashoffset = offset;
+
+      if (val < 30) {
+        moistureStatusPill.innerText = 'Moisture Deficit';
+        moistureStatusPill.style.backgroundColor = 'var(--amber-subtle)';
+        moistureStatusPill.style.color = 'var(--amber-text)';
+        gaugeFillArc.style.stroke = 'var(--lime-accent)';
+        gaugeHumanLabel.innerText = 'DRY';
+      } else if (val > 70) {
+        moistureStatusPill.innerText = 'Waterlogged Soil';
+        moistureStatusPill.style.backgroundColor = 'var(--sky-subtle)';
+        moistureStatusPill.style.color = 'var(--sky-text)';
+        gaugeFillArc.style.stroke = 'var(--sky-accent)';
+        gaugeHumanLabel.innerText = 'WET';
+      } else {
+        moistureStatusPill.innerText = 'Optimal Moisture';
+        moistureStatusPill.style.backgroundColor = 'var(--emerald-subtle)';
+        moistureStatusPill.style.color = 'var(--emerald-text)';
+        gaugeFillArc.style.stroke = 'var(--emerald-primary)';
+        gaugeHumanLabel.innerText = 'HEALTHY';
+      }
+    }
+
+    // Event Listeners for Telemetry Sliders
+    moistureSlider.addEventListener('input', (e) => {
+      updateMoistureGauge(parseFloat(e.target.value));
+    });
+
+    tempSlider.addEventListener('input', (e) => {
+      tempValDisplay.innerText = parseFloat(e.target.value).toFixed(1);
+    });
+
+    humiditySlider.addEventListener('input', (e) => {
+      humidityValDisplay.innerText = parseFloat(e.target.value).toFixed(1);
+    });
+
+    // Theme Toggle
+    themeToggleBtn.addEventListener('click', () => {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        themeIcon.setAttribute('data-lucide', 'moon');
+      } else {
+        html.classList.add('dark');
+        themeIcon.setAttribute('data-lucide', 'sun');
+      }
+      lucide.createIcons();
+    });
+
+    // Run Diagnosis Simulation
+    runDiagnosisBtn.addEventListener('click', () => {
+      viewportContainer.classList.add('scanning');
+      runDiagnosisBtn.style.opacity = '0.7';
+      runDiagnosisBtn.querySelector('.cta-left span').innerText = 'Analyzing Leaf Photons & Root Telemetry...';
+
+      setTimeout(() => {
+        viewportContainer.classList.remove('scanning');
+        runDiagnosisBtn.style.opacity = '1';
+        runDiagnosisBtn.querySelector('.cta-left span').innerHTML = 'Run AI <span class="serif-phrase">Diagnosis & Care Plan</span>';
+        
+        rxStandbyState.style.display = 'none';
+        rxActiveState.style.display = 'flex';
+        lucide.createIcons();
+      }, 1400);
+    });
+
+    // Sample Leaves Modal handlers
+    openSamplesBtn.addEventListener('click', () => {
+      samplesModal.style.display = 'flex';
+    });
+
+    closeSamplesModal.addEventListener('click', () => {
+      samplesModal.style.display = 'none';
+    });
+
+    samplesModal.addEventListener('click', (e) => {
+      if (e.target === samplesModal) samplesModal.style.display = 'none';
+    });
+
+    document.querySelectorAll('.sample-thumb-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const imgUrl = card.getAttribute('data-img');
+        const crop = card.getAttribute('data-crop');
+        const moist = parseFloat(card.getAttribute('data-moisture'));
+        
+        targetLeafImage.src = imgUrl;
+        navCropLabel.innerText = crop;
+        moistureSlider.value = moist;
+        updateMoistureGauge(moist);
+        samplesModal.style.display = 'none';
+      });
+    });
+
+    // Image Upload
+    browseFileBtn.addEventListener('click', () => hiddenFileInput.click());
+    hiddenFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          targetLeafImage.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Live Clock Update
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('clockDisplay').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }, 1000);
+
+    // Initial Gauge Calibration
+    updateMoistureGauge(28.5);
+  </script>
+</body>
+</html>

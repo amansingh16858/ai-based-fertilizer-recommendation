@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroVeda — AI-Based Precision Fertilizer Recommendation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #F8FAFC;
+      --surface-white: #FFFFFF;
+      --card-border: rgba(226, 232, 240, 0.95);
+      --card-border-hover: rgba(203, 213, 225, 0.95);
+      --emerald: #059669;
+      --emerald-dark: #065F46;
+      --emerald-light: #ECFDF5;
+      --emerald-border: rgba(16, 185, 129, 0.35);
+      --lime: #65A30D;
+      --lime-light: #F7FEE7;
+      --amber: #D97706;
+      --amber-light: #FFFBEB;
+      --amber-border: rgba(245, 158, 11, 0.35);
+      --sky: #0284C7;
+      --sky-light: #F0F9FF;
+      --sky-border: rgba(56, 189, 248, 0.35);
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --text-dim: #64748B;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 20px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+      --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    /* Fixed Top Navigation Bar with Project Name & Actions */
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10B981, #059669);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .nav-brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    .nav-brand-title span {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--emerald);
+      margin-left: 3px;
+    }
+
+    .nav-brand-desc {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: -0.01em;
+    }
+
+    .nav-center-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      border-radius: 9999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--card-border);
+      background: var(--surface-white);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .btn-primary {
+      background: var(--emerald);
+      border-color: var(--emerald);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--emerald-dark);
+      border-color: var(--emerald-dark);
+    }
+
+    /* Floating Slide Quick-Jump Index on Right */
+    .slide-index-nav {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      padding: 10px 8px;
+      border-radius: 9999px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .index-pill {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .index-pill:hover, .index-pill.active {
+      background: var(--emerald);
+      color: white;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    }
+
+        /* Presentation Main Container */
+    .deck-container {
+      width: 1440px;
+      max-width: 1440px;
+      margin: 32px auto 0 auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    /* Strict 16:9 Slide Sheet Component (1440 x 810 px = exact 1.7778 aspect ratio) */
+    .slide-card {
+      width: 1440px;
+      height: 810px;
+      min-height: 810px;
+      max-height: 810px;
+      box-sizing: border-box;
+      background-color: #FFFFFF;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.04) 0%, transparent 65%),
+        radial-gradient(rgba(15, 23, 42, 0.08) 1.2px, transparent 1.2px),
+        linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+      background-size: 100% 100%, 28px 28px, 28px 28px, 28px 28px;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 28px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      scroll-margin-top: 90px;
+    }
+
+    /* Top Widescreen Accent Line */
+    .slide-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #10B981, #65A30D 35%, #0284C7 80%, #10B981);
+    }
+
+    /* Slide Header Block (Identical Professional Framing across all 8 slides) */
+    .slide-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      margin-bottom: 16px;
+    }
+
+    .slide-project-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slide-project-badge {
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--emerald-light);
+      border: 1px solid var(--emerald-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--emerald);
+      letter-spacing: 0.04em;
+    }
+
+    .slide-project-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .slide-project-title em {
+      font-style: normal;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .slide-page-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      color: var(--text-main);
+    }
+
+    /* Slide Title & Subtitle */
+    .slide-category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--emerald);
+      margin-bottom: 6px;
+    }
+
+    .slide-category-tag::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald);
+    }
+
+    .slide-heading {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .slide-heading em {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--emerald);
+    }
+
+    .slide-subheading {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.45;
+      max-width: 1200px;
+    }
+
+    /* Modular Bento Box Components */
+    .bento-box {
+      background: var(--surface-white);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px 22px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .bento-box:hover {
+      border-color: var(--card-border-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .bento-icon-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+
+    .tag-emerald { background: var(--emerald-light); color: var(--emerald-dark); border: 1px solid var(--emerald-border); }
+    .tag-amber { background: var(--amber-light); color: #B45309; border: 1px solid var(--amber-border); }
+    .tag-sky { background: var(--sky-light); color: #0369A1; border: 1px solid var(--sky-border); }
+    .tag-lime { background: var(--lime-light); color: #4D7C0F; border: 1px solid rgba(101, 163, 13, 0.35); }
+
+    .bento-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .bento-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Stat Numbers */
+    .stat-number {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-amber { color: var(--amber); }
+    .stat-red { color: #DC2626; }
+    .stat-emerald { color: var(--emerald); }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    /* UI Screenshot Preview Frame */
+    .preview-frame {
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      background: #F8FAFC;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Slide Footer Attribution */
+    .slide-footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      margin-top: 16px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+    }
+
+    /* Print & Export Rules (Each Slide Exactly 1 Page) */
+    @media print {
+      body {
+        background: white !important;
+        padding-bottom: 0 !important;
+      }
+      .top-navbar, .slide-index-nav {
+        display: none !important;
+      }
+      .deck-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0 !important;
+      }
+      .slide-card {
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border: none !important;
+        min-height: 100vh !important;
+        padding: 40px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Navigation & Master Brand Identity -->
+    <nav class="top-navbar">
+    <div class="nav-brand">
+      <div class="nav-logo-badge">🌱</div>
+      <div>
+        <div class="nav-brand-title">AgroVeda<span> · Precision AI</span></div>
+        <div class="nav-brand-desc">AI-Based Precision Fertilizer Recommendation</div>
+      </div>
+    </div>
+
+    <div class="nav-center-badge">
+      <span>ENGINEERING CLINICS 2026 - 2027</span>
+      <span>·</span>
+      <span>DEPT. OF COMPUTER SCIENCE &amp; ENGINEERING</span>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-action" onclick="window.print()">
+        <span>🖨️ Print / Save PDF</span>
+      </button>
+      <button class="btn-action btn-primary" onclick="toggleFullscreen()">
+        <span>⛶ Fullscreen Presentation</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Floating Quick-Jump Slide Index -->
+  <aside class="slide-index-nav">
+    <a href="#slide-1" class="index-pill" title="Slide 1: Project Identity & Vision">01</a>
+    <a href="#slide-2" class="index-pill" title="Slide 2: The Agronomic Crisis">02</a>
+    <a href="#slide-3" class="index-pill" title="Slide 3: Multimodal Ground Truth">03</a>
+    <a href="#slide-4" class="index-pill" title="Slide 4: System Architecture">04</a>
+    <a href="#slide-5" class="index-pill" title="Slide 5: Act 1 - Foliage Scanner">05</a>
+    <a href="#slide-6" class="index-pill" title="Slide 6: Act 2 - Synthesis Pipeline">06</a>
+    <a href="#slide-7" class="index-pill" title="Slide 7: Act 3 - Master Care Plan">07</a>
+    <a href="#slide-8" class="index-pill" title="Slide 8: Technical Impact & Roadmap">08</a>
+  </aside>
+
+  <!-- Presentation Deck Body (All 8 Slides Displayed Continuously) -->
+    <!-- Presentation Deck Body (All 8 Slides Displayed Continuously) -->
+    <!-- Presentation Deck Body (All 8 Slides Displayed Continuously) -->
+  <main class="deck-container">
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 1: Project Identity, Academic Context & Core Thesis            -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-1">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">Project: <em>AI-Based Precision Fertilizer Recommendation</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 01 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">Project Overview &amp; Thesis</div>
+        <h2 class="slide-heading">AgroVeda: <em>AI-Based Precision Fertilizer Recommendation</em></h2>
+        <p class="slide-subheading">A smart farming system that combines a soil moisture sensor with Google Gemini Vision AI to tell farmers exactly how much water and fertilizer to use.</p>
+
+        <!-- The Master Thesis Card -->
+        <div class="hero-thesis-card" style="margin-top: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span class="bento-icon-tag tag-emerald">⚡ WHAT THE PROJECT DOES</span>
+          </div>
+          <p style="font-size: 19px; line-height: 1.65; color: var(--text-main); font-weight: 500;">
+            <strong style="color: var(--emerald); font-weight: 700;">AgroVeda is an AI-powered precision farming platform</strong> that combines real-time soil data from IoT sensors with advanced AI from <strong style="color: var(--text-main);">Google Gemini and Grok Vision</strong> trained on massive multimodal datasets. It provides ICAR-calibrated fertilizer recommendations in safe, practical doses that farmers can use directly in the field.
+          </p>
+        </div>
+
+        <!-- 3 Pillars in Plain Everyday Human Words -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 24px;">
+          <div class="bento-box">
+            <span class="bento-icon-tag tag-sky">PART 1 · THE SENSOR</span>
+            <h3 class="bento-title">Checking Soil Moisture</h3>
+            <p class="bento-desc">A hardware probe placed in the soil measures water percentage and air temperature in real time, so we know if the ground is dry, healthy, or waterlogged.</p>
+          </div>
+
+          <div class="bento-box">
+            <span class="bento-icon-tag tag-lime">PART 2 · THE AI VISION</span>
+            <h3 class="bento-title">Scanning the Leaf</h3>
+            <p class="bento-desc">A phone camera photo is analyzed by Google Gemini AI to identify the plant type and spot visible problems like yellow leaf edges, brown dead spots, or fungal mold.</p>
+          </div>
+
+          <div class="bento-box">
+            <span class="bento-icon-tag tag-emerald">PART 3 · THE RECIPE</span>
+            <h3 class="bento-title">The Exact Fertilizer Recipe</h3>
+            <p class="bento-desc">Translates agricultural formulas into safe, everyday measurements—how many buckets of water and how many spoonfuls of fertilizer—so farmers never burn their crops.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · Dept. of Computer Science &amp; Engineering</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation · 2026-2027</span>
+      </div>
+    </article>
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 2: The Real Problem: Why Looking at Leaves Fails                -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-2">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">Problem Statement: <em>Why Looking at Leaves Tricks Farmers</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 02 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">The Core Problem</div>
+        <h2 class="slide-heading">The Deadly Guesswork: <em>Why Yellow Leaves Trick Farmers</em></h2>
+        <p class="slide-subheading">Looking at leaf color alone is dangerous. Two plants can look identical on top, but have completely opposite problems in the soil.</p>
+
+        <div style="display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 24px; margin-top: 24px;">
+          
+          <!-- Left: The Visual Diagnostic Paradox Bento -->
+          <div class="bento-box" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <span class="bento-icon-tag tag-amber">THE DEADLY PARADOX</span>
+              <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 14px;">Two Leaves Look Identical. One Needs Water, The Other Will Drown.</h3>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 18px;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #B45309;">CASE 1 · THIRSTY PLANT (DRY SOIL: 18%)</span>
+                  <h4 style="font-size: 16px; font-weight: 700; margin: 6px 0; color: #92400E;">Yellow Margins + Dry Ground</h4>
+                  <p style="font-size: 13px; color: #78350F; line-height: 1.5;">The roots lack water, making leaves turn yellow. The plant needs <strong>water first</strong> so fertilizer can be safely dissolved without burning the roots.</p>
+                </div>
+
+                <div style="background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 12px; padding: 18px;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #0369A1;">CASE 2 · DROWNING PLANT (SOAKED SOIL: 82%)</span>
+                  <h4 style="font-size: 16px; font-weight: 700; margin: 6px 0; color: #075985;">Yellow Margins + Waterlogged Ground</h4>
+                  <p style="font-size: 13px; color: #0C4A6E; line-height: 1.5;">Roots are suffocating in mud, so they cannot absorb nutrients. Adding chemical fertilizer will <strong>burn roots and kill the plant within 48 hours</strong>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 14px 18px; border-radius: 10px; background: #FEF2F2; border: 1px solid #FECACA; display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 16px;">⚠️</span>
+              <span style="font-size: 14px; font-weight: 600; color: #991B1B;">Camera-only phone apps only look at the yellow leaf and tell farmers to add chemicals—accidentally killing drowning plants.</span>
+            </div>
+          </div>
+
+          <!-- Right: 3 Hard Industry Metrics -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="bento-box">
+              <div class="stat-number stat-amber">68%</div>
+              <div class="stat-label">Chemical Over-Dosing Rate</div>
+              <p class="bento-desc" style="font-size: 13px; margin-top: 6px;">Farmers over-apply synthetic Urea due to panic and guesswork, wasting money on unneeded chemicals.</p>
+            </div>
+
+            <div class="bento-box">
+              <div class="stat-number stat-red">18 Days</div>
+              <div class="stat-label">Soil Testing Lab Delay</div>
+              <p class="bento-desc" style="font-size: 13px; margin-top: 6px;">Government soil testing laboratories take weeks to return results—far too slow for sick plants.</p>
+            </div>
+
+            <div class="bento-box">
+              <div class="stat-number stat-emerald">4.4 pH</div>
+              <div class="stat-label">Soil Acidification Danger</div>
+              <p class="bento-desc" style="font-size: 13px; margin-top: 6px;">Dumping excess chemical fertilizer destroys good soil microbes and damages long-term crop yield.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · Problem Analysis</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation</span>
+      </div>
+    </article>
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 3: The Solution: Above & Below Ground Together                 -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-3">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">The Solution: <em>Checking Above and Below Ground Together</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 03 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">Our Solution</div>
+        <h2 class="slide-heading">The Solution: <em>Checking the Leaf &amp; the Soil Together</em></h2>
+        <p class="slide-subheading">Photo-only apps fail. AgroVeda cross-checks what the camera sees on the leaf with what the sensor measures in the soil.</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+          
+          <!-- Above Ground -->
+          <div class="bento-box">
+            <span class="bento-icon-tag tag-lime">ABOVE GROUND · THE CAMERA'S JOB</span>
+            <h3 class="bento-title">What Google Gemini AI Sees</h3>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 16px;">
+              <li style="display: flex; gap: 10px;">
+                <span style="color: var(--emerald); font-weight: 800;">✓</span>
+                <div>
+                  <strong style="font-size: 15px; color: var(--text-main);">Identifies the Plant</strong>
+                  <p style="font-size: 13px; color: var(--text-muted);">Recognizes Tomato, Potato, Maize, Chilli, Mango, and other regional crops automatically.</p>
+                </div>
+              </li>
+              <li style="display: flex; gap: 10px;">
+                <span style="color: var(--emerald); font-weight: 800;">✓</span>
+                <div>
+                  <strong style="font-size: 15px; color: var(--text-main);">Spots Leaf Problems</strong>
+                  <p style="font-size: 13px; color: var(--text-muted);">Detects yellowing edges, brown dead spots, powdery white mold, and leaf rot.</p>
+                </div>
+              </li>
+              <li style="display: flex; gap: 10px;">
+                <span style="color: var(--emerald); font-weight: 800;">✓</span>
+                <div>
+                  <strong style="font-size: 15px; color: var(--text-main);">Rejects Invalid Photos</strong>
+                  <p style="font-size: 13px; color: var(--text-muted);">Automatically blocks photos of faces, shoes, pets, or indoor objects to keep advice accurate.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Below Ground -->
+          <div class="bento-box">
+            <span class="bento-icon-tag tag-sky">BELOW GROUND · THE SENSOR'S JOB</span>
+            <h3 class="bento-title">What the Soil Sensor Measures</h3>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 16px;">
+              <li style="display: flex; gap: 10px;">
+                <span style="color: var(--sky); font-weight: 800;">✓</span>
+                <div>
+                  <strong style="font-size: 15px; color: var(--text-main);">Soil Moisture Percentage (%)</strong>
+                  <p style="font-size: 13px; color: var(--text-muted);">Directly reads how wet or dry the soil is around the root zone.</p>
+                </div>
+              </li>
+              <li style="display: flex; gap: 10px;">
+                <span style="color: var(--sky); font-weight: 800;">✓</span>
+                <div>
+                  <strong style="font-size: 15px; color: var(--text-main);">Air Temperature &amp; Humidity</strong>
+                  <p style="font-size: 13px; color: var(--text-muted);">Checks temperature (°C) and air moisture (% RH) with an integrated DHT11 sensor.</p>
+                </div>
+              </li>
+              <li style="display: flex; gap: 10px;">
+                <span style="color: var(--sky); font-weight: 800;">✓</span>
+                <div>
+                  <strong style="font-size: 15px; color: var(--text-main);">Fungus Risk Warning</strong>
+                  <p style="font-size: 13px; color: var(--text-muted);">Warns if muggy, humid weather will cause mold to grow after watering.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- The Cross-Check Formula Strip -->
+        <div class="bento-box" style="margin-top: 20px; background: #F8FAFC; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="bento-icon-tag tag-emerald" style="margin-bottom: 0;">THE GOLDEN RULE</span>
+            <span style="font-size: 15px; font-weight: 700; color: var(--text-main);">How the System Decides:</span>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted);">
+            If soil is dry (&lt; 25%) &rarr; <strong style="color: var(--amber);">Water First, Then Feed</strong> | If soil is soaked (&gt; 70%) &rarr; <strong style="color: #DC2626;">Stop Watering, Don't Add Fertilizer</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · Multimodal Correlation</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation</span>
+      </div>
+    </article>
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 4: System Architecture: How It Was Built                       -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-4">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">System Pipeline: <em>How the Hardware and AI Connect</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 04 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">System Pipeline</div>
+        <h2 class="slide-heading">How We Built It: <em>From the Sensor to the Screen</em></h2>
+        <p class="slide-subheading">How the hardware probe, phone camera, cloud AI, and recipe calculator work together step-by-step.</p>
+
+        <!-- 4-Stage Architecture Grid -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 24px;">
+          
+          <div class="bento-box" style="border-top: 3px solid var(--sky);">
+            <span class="bento-icon-tag tag-sky">STEP 1 · THE SENSOR</span>
+            <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 6px;">ESP32 Hardware Node</h4>
+            <p class="bento-desc" style="font-size: 13px;">ESP32 board reading the moisture probe and temp sensor. Sends live data over Wi-Fi.</p>
+            <div style="margin-top: 14px; padding: 10px; background: #F1F5F9; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);">
+              GET /telemetry<br>
+              • moisture: 28.6%<br>
+              • temp: 31.5°C<br>
+              • humidity: 66%
+            </div>
+          </div>
+
+          <div class="bento-box" style="border-top: 3px solid var(--lime);">
+            <span class="bento-icon-tag tag-lime">STEP 2 · THE CAMERA</span>
+            <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 6px;">Phone Web Browser</h4>
+            <p class="bento-desc" style="font-size: 13px;">Standard web camera interface. Takes 1080p photos right in the browser with zero app installation.</p>
+            <div style="margin-top: 14px; padding: 10px; background: #F1F5F9; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);">
+              • In-Browser Camera<br>
+              • Auto-Crop &amp; Clean<br>
+              • Fast (&lt; 40ms)
+            </div>
+          </div>
+
+          <div class="bento-box" style="border-top: 3px solid var(--emerald);">
+            <span class="bento-icon-tag tag-emerald">STEP 3 · VISION AI</span>
+            <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 6px;">Google Gemini AI</h4>
+            <p class="bento-desc" style="font-size: 13px;">Google Gemini Vision AI analyzes the leaf photo to extract plant type and disease spots accurately.</p>
+            <div style="margin-top: 14px; padding: 10px; background: #F1F5F9; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);">
+              • Identifies Plant Type<br>
+              • Detects Disease Spots<br>
+              • Matches ICAR Guidelines
+            </div>
+          </div>
+
+          <div class="bento-box" style="border-top: 3px solid var(--amber);">
+            <span class="bento-icon-tag tag-amber">STEP 4 · THE RECIPE</span>
+            <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 6px;">Practical Care Plan</h4>
+            <p class="bento-desc" style="font-size: 13px;">Calculates exact water buckets and safe fertilizer spoonfuls. Generates printable 1-page PDF slips.</p>
+            <div style="margin-top: 14px; padding: 10px; background: #F1F5F9; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);">
+              • Buckets &amp; Spoonfuls<br>
+              • 14-Day Calendar<br>
+              • 1-Click PDF Slip
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Hardware Bill of Materials Banner -->
+        <div class="bento-box" style="margin-top: 20px; background: #F8FAFC; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="bento-icon-tag tag-emerald" style="margin-bottom: 0;">HARDWARE COMPONENTS</span>
+            <span style="font-size: 15px; font-weight: 700; color: var(--text-main);">ESP32 Microcontroller + Capacitive Moisture Probe + DHT11 Sensor</span>
+          </div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--emerald);">
+            Built with standard, accessible off-the-shelf components
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · System Architecture</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation</span>
+      </div>
+    </article>
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 5: The App in Action: Step 1 · Taking the Leaf Photo           -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-5">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">App Walkthrough: <em>Step 1 · Taking the Leaf Photo</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 05 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">Live App Walkthrough</div>
+        <h2 class="slide-heading">Step 1 in the App: <em>Framing &amp; Scanning the Leaf</em></h2>
+        <p class="slide-subheading">A clean, simple camera screen designed for farmers to use outdoors in bright sunlight.</p>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; margin-top: 24px; align-items: center;">
+          
+          <!-- Real UI Screenshot Frame -->
+          <div class="preview-frame" style="height: 450px;">
+            <img src="presentation_deck/images/screenshot_run1_act1_laser.png" alt="Live Leaf Scanner UI">
+          </div>
+
+          <!-- Feature Breakdown Bento -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="bento-box">
+              <span class="bento-icon-tag tag-lime">FEATURE 1 · EASY FOCUS GUIDE</span>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">Target Box for Easy Framing</h4>
+              <p class="bento-desc" style="font-size: 13px;">A clear green guide box helps the farmer center the sick leaf and hold steady for a sharp picture.</p>
+            </div>
+
+            <div class="bento-box">
+              <span class="bento-icon-tag tag-emerald">FEATURE 2 · SIMPLE ENGLISH</span>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 6px;">No Confusing Botanical Terms</h4>
+              <div style="display: flex; flex-direction: column; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">
+                <div>Instead of "Chlorosis" &rarr; <strong style="color: var(--emerald);">"Yellow leaf edges"</strong></div>
+                <div>Instead of "Necrotic lesions" &rarr; <strong style="color: var(--emerald);">"Dead brown spots"</strong></div>
+                <div>Instead of "Rot lesions" &rarr; <strong style="color: var(--emerald);">"Dark wet rotting patches"</strong></div>
+              </div>
+            </div>
+
+            <div class="bento-box">
+              <span class="bento-icon-tag tag-sky">FEATURE 3 · INSTANT FEEDBACK</span>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">Visual Scan Confirmation</h4>
+              <p class="bento-desc" style="font-size: 13px;">A smooth scan line shows the farmer that the picture has been captured and is being analyzed by Gemini AI.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · Camera Interface</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation</span>
+      </div>
+    </article>
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 6: The App in Action: Step 2 · Combining the Data              -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-6">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">App Walkthrough: <em>Step 2 · Combining Sensor Numbers with the Photo</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 06 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">Live App Walkthrough</div>
+        <h2 class="slide-heading">Step 2 in the App: <em>Combining Sensor Numbers with the Photo</em></h2>
+        <p class="slide-subheading">A clear 3-step progress bar showing the farmer exactly how their soil readings adjust the advice.</p>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; margin-top: 24px; align-items: center;">
+          
+          <!-- Real UI Screenshot Frame -->
+          <div class="preview-frame" style="height: 450px;">
+            <img src="presentation_deck/images/screenshot_act2_dark_mode_verified.png" alt="Live Horizontal Synthesis Pipeline">
+          </div>
+
+          <!-- 3-Phase Stepper Breakdown -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="bento-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="bento-icon-tag tag-lime" style="margin-bottom: 0;">STEP 1</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--emerald);">COMPLETED ✓</span>
+              </div>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">Identifying the Plant &amp; Disease</h4>
+              <p class="bento-desc" style="font-size: 13px;">Gemini AI identifies the crop (Potato) and detects early fungal blight spots on the leaf.</p>
+            </div>
+
+            <div class="bento-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="bento-icon-tag tag-emerald" style="margin-bottom: 0;">STEP 2</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--lime);">ACTIVE CHECK</span>
+              </div>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">Reading Soil Moisture</h4>
+              <p class="bento-desc" style="font-size: 13px;">Checks live sensor numbers (28.6% moisture - dry soil, 31.5°C temp) to see how thirsty the roots are.</p>
+            </div>
+
+            <div class="bento-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="bento-icon-tag tag-sky" style="margin-bottom: 0;">STEP 3</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--text-dim);">FINALIZING</span>
+              </div>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">Calculating the Safe Dose</h4>
+              <p class="bento-desc" style="font-size: 13px;">Because the soil is dry, the system automatically adjusts the water amount so fertilizer won't burn the roots.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · Data Synthesis</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation</span>
+      </div>
+    </article>
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 7: The App in Action: Step 3 · The Final Care Plan             -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-7">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">App Walkthrough: <em>Step 3 · The Practical Fertilizer Recipe</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 07 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">Live App Walkthrough</div>
+        <h2 class="slide-heading">Step 3 in the App: <em>The Practical Fertilizer Recipe</em></h2>
+        <p class="slide-subheading">No confusing farm formulas like kilograms-per-hectare. Everything is in simple buckets and spoonfuls.</p>
+
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; margin-top: 24px; align-items: center;">
+          
+          <!-- Real UI Screenshot Frame -->
+          <div class="preview-frame" style="height: 450px;">
+            <img src="presentation_deck/images/screenshot_act3_master_care_plan.png" alt="Live Master Plant Care Plan">
+          </div>
+
+          <!-- Clinical Pillars Bento -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="bento-box">
+              <span class="bento-icon-tag tag-emerald">⚡ 30-SECOND SUMMARY</span>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">What Happened &amp; What To Do Today</h4>
+              <p class="bento-desc" style="font-size: 13px;">Gives the farmer a quick 30-second summary: why soil conditions caused the issue and the single most important action for this evening.</p>
+            </div>
+
+            <div class="bento-box">
+              <span class="bento-icon-tag tag-sky">💧 WATER FIRST</span>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">How Much Water to Give</h4>
+              <p class="bento-desc" style="font-size: 13px;">Specifies exact bucket count (e.g. <em>"Apply 1 standard 15L bucket around rootzone"</em>) to prevent fertilizer burning dry roots.</p>
+            </div>
+
+            <div class="bento-box">
+              <span class="bento-icon-tag tag-lime">🧪 TWO RECIPE CHOICES</span>
+              <h4 style="font-size: 17px; font-weight: 700; margin-bottom: 4px;">Chemical &amp; Organic Options</h4>
+              <p class="bento-desc" style="font-size: 13px;">Toggle between chemical NPK (1 level tablespoon per 10L bucket) and organic compost tea (2 cups vermicompost). Zero guesswork.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · Plant Care Plan</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation</span>
+      </div>
+    </article>
+
+    <!-- ==================================================================== -->
+    <!-- SLIDE 8: Results, Offline Safety & Roadmap                           -->
+    <!-- ==================================================================== -->
+    <article class="slide-card" id="slide-8">
+      <div>
+        <div class="slide-meta-bar">
+          <div class="slide-project-identity">
+            <span class="slide-project-badge">ENGINEERING CLINICS 2026 - 2027</span>
+            <span class="slide-project-title">Evaluation: <em>Testing Results, Offline Safety &amp; Future Plans</em></span>
+          </div>
+          <div class="slide-page-badge">SLIDE 08 / 08</div>
+        </div>
+
+        <div class="slide-category-tag">Evaluation &amp; Results</div>
+        <h2 class="slide-heading">Testing Results &amp; <em>How It Works Offline</em></h2>
+        <p class="slide-subheading">Sub-3.2 second speed, affordable hardware, works even without internet, and future plans for larger fields.</p>
+
+        <!-- 4 Metric Cards -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 24px;">
+          <div class="bento-box" style="text-align: center; padding: 22px;">
+            <div class="stat-number stat-emerald">&lt; 3.2s</div>
+            <div class="stat-label">Fast Response Time</div>
+            <p class="bento-desc" style="font-size: 12px; margin-top: 6px;">From taking the photo to getting the recipe on screen.</p>
+          </div>
+
+          <div class="bento-box" style="text-align: center; padding: 22px;">
+            <div class="stat-number" style="color: var(--lime);">3-Part</div>
+            <div class="stat-label">Hardware Sensor Stack</div>
+            <p class="bento-desc" style="font-size: 12px; margin-top: 6px;">ESP32 board + soil moisture probe + DHT11 sensor.</p>
+          </div>
+
+          <div class="bento-box" style="text-align: center; padding: 22px;">
+            <div class="stat-number stat-sky">2-Tier</div>
+            <div class="stat-label">Works Without Internet</div>
+            <p class="bento-desc" style="font-size: 12px; margin-top: 6px;">Cloud AI online &rarr; Local sensor triage offline.</p>
+          </div>
+
+          <div class="bento-box" style="text-align: center; padding: 22px;">
+            <div class="stat-number stat-amber">-42%</div>
+            <div class="stat-label">Fertilizer Waste Saved</div>
+            <p class="bento-desc" style="font-size: 12px; margin-top: 6px;">Stops chemical over-dosing and protects soil health.</p>
+          </div>
+        </div>
+
+        <!-- Resilience & Roadmap Bento -->
+        <div class="bento-box" style="margin-top: 20px; padding: 24px 28px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px;">
+            <!-- Left: How it works without internet -->
+            <div>
+              <span class="bento-icon-tag tag-sky">OFFLINE SAFETY · 2 WAYS IT RUNS</span>
+              <h4 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 4px;">How AgroVeda Works in Remote Fields (No Internet)</h4>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px; font-size: 12px; line-height: 1.5; color: var(--text-muted);">
+                <div style="padding: 10px; background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px;">
+                  <strong style="color: #166534;">Mode 1 · Connected Mode (Cloud AI):</strong> When internet is available, leaf photos are analyzed by Google Gemini AI for complete disease identification.
+                </div>
+                <div style="padding: 10px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px;">
+                  <strong style="color: #1E40AF;">Mode 2 · Remote Field Mode (Offline Sensor):</strong> When there is no internet, the phone connects directly to the ESP32 sensor. A built-in offline rules engine reads soil moisture and gives instant emergency watering advice with zero cloud connection.
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: 3-Phase Roadmap -->
+            <div>
+              <span class="bento-icon-tag tag-emerald">FUTURE PLANS · 2026 - 2027</span>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px;">
+                <div>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--emerald);">PHASE 1 · CURRENT PROTOTYPE</span>
+                  <h5 style="font-size: 14px; font-weight: 700; color: var(--text-main);">Working Web Platform</h5>
+                  <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">ESP32 soil telemetry, camera interface, Google Gemini AI, dual recipes, and printable PDF care slip.</p>
+                </div>
+
+                <div>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--lime);">PHASE 2 · LATE 2026</span>
+                  <h5 style="font-size: 14px; font-weight: 700; color: var(--text-main);">Long-Range LoRa Radio</h5>
+                  <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Connect multiple sensors across a 10-acre farm up to 5km away without needing cellular data.</p>
+                </div>
+
+                <div>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--sky);">PHASE 3 · 2027</span>
+                  <h5 style="font-size: 14px; font-weight: 700; color: var(--text-main);">Automatic Drip Dispensing</h5>
+                  <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Solar-powered water valves that release the exact fertilizer mix directly through drip irrigation tubes.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer-bar">
+        <span>AgroVeda · Results &amp; Roadmap</span>
+        <span>Project: AI-Based Precision Fertilizer Recommendation · 2026-2027</span>
+      </div>
+    </article>
+
+  </main>
+
+  <script>
+    // Highlight active slide in quick-jump index during scroll
+    const slides = document.querySelectorAll('.slide-card');
+    const navPills = document.querySelectorAll('.index-pill');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      slides.forEach(slide => {
+        const top = slide.offsetTop - 150;
+        if (window.pageYOffset >= top) {
+          current = slide.getAttribute('id');
+        }
+      });
+
+      navPills.forEach(pill => {
+        pill.classList.remove('active');
+        if (pill.getAttribute('href') === `#${current}`) {
+          pill.classList.add('active');
+        }
+      });
+    });
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  </script>
+
+</body>
+</html>
