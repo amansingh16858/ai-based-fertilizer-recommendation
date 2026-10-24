@@ -1,4 +1,4 @@
-﻿# 🌾 AgroPulse AI — Smart Fertilizer & Crop Diagnostic System
+# 🌾 AgroPulse AI — Smart Fertilizer & Crop Diagnostic System
 
 > **AI-Powered Dual-Engine Precision Agriculture**: Fusing real-time soil telemetry with high-resolution computer vision to prescribe exact chemical (NPK) and organic fertilizer remedies.
 
@@ -19,7 +19,7 @@ Unlike traditional crop apps that only inspect leaf photos or simple soil sensor
 
 ---
 
-## 🛠️ Hardware Specification (~₹910 / .00 BOM)
+## 🛠️ Hardware Specification
 
 - **ESP32-CAM + MB Shield**: Edge microcontroller with OV2640 camera & WiFi.
 - **Capacitive Soil Moisture Sensor v1.2**: Corrosion-resistant analog soil telemetry.
