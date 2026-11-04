@@ -175,7 +175,7 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({
                     : `Streaming live soil data via ${connectionSourceText}` 
                   : isSampleActive 
                   ? `Pre-filled from field sample (${moisture}%)`
-                  : 'Probe offline — slide below to set manually'}
+                  : 'Slide below to adjust moisture'}
               </p>
             </div>
           </div>
@@ -223,9 +223,9 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({
           </div>
         )}
 
-        {/* Soil Hardware Status Banner */}
-        <div className="mb-2">
-          {isProbeConnected ? (
+        {/* Soil Hardware Status Banner — Only shown if connected */}
+        {isProbeConnected && (
+          <div className="mb-2">
             <div className={`w-full flex items-center justify-between text-xs px-3 py-2 rounded-xl border transition-all ${
               isProbeInAir
                 ? 'text-indigo-900 dark:text-indigo-200 bg-indigo-50/80 dark:bg-indigo-950/30 border-indigo-200/80 dark:border-indigo-500/30'
@@ -250,24 +250,8 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({
                 {isProbeInAir ? 'NOT IN SOIL' : 'IN SOIL'}
               </span>
             </div>
-          ) : isSampleActive ? (
-            <div className="w-full flex items-center justify-between text-xs text-sky-800 dark:text-sky-300 bg-sky-50/80 dark:bg-sky-950/30 border border-sky-300/70 dark:border-sky-500/30 p-2.5 rounded-xl">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="w-2 h-2 rounded-full bg-sky-500 flex-shrink-0" />
-                <span className="font-semibold truncate">Pre-filled from field sample ({moisture}%). You can slide below to adjust anytime.</span>
-              </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-200/60 dark:bg-sky-900/60 font-bold flex-shrink-0 ml-2">SAMPLE DATA</span>
-            </div>
-          ) : (
-            <div className="w-full flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-950/30 border border-amber-300/70 dark:border-amber-500/30 p-2.5 rounded-xl">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0 animate-ping" />
-                <span className="font-semibold truncate">Probe not connected. Slide the bar below to set your soil moisture, or connect ESP32.</span>
-              </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-200/60 dark:bg-amber-900/60 font-bold flex-shrink-0 ml-2">MANUAL SLIDER</span>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Progress Ring Gauge (Optimized Golden Viewport - Spacious Apple-grade ring) */}
         <div className="relative flex flex-col items-center justify-center my-1 sm:my-2">

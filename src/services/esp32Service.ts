@@ -1,22 +1,24 @@
 import { SoilTelemetry } from '../types';
 
-let simulatedSoilMoisture = 28.5;
-let simulatedTemperature = 31.4;
-let simulatedHumidity = 66.0;
+let simulatedSoilMoisture = 48.0;
+let simulatedTemperature = 26.0;
+let simulatedHumidity = 62.0;
 
-let lastDeliveredMoisture = 24.0;
+let lastDeliveredMoisture = 18.0;
 
 export async function fetchESP32Telemetry(deviceIp?: string): Promise<SoilTelemetry> {
-  // If user specified an IP, use that; otherwise auto-probe local USB bridge (127.0.0.1:5000)
+  // Priority: 1) user IP if provided, 2) Vite proxy (/telemetry), 3) direct USB bridge
   const targets = deviceIp && deviceIp.trim() !== '' 
     ? [deviceIp.trim()] 
-    : ['127.0.0.1:5000', 'localhost:5000'];
+    : ['/telemetry', 'http://127.0.0.1:5000/telemetry', 'http://localhost:5000/telemetry'];
 
   for (const target of targets) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-      const url = target.startsWith('http') ? `${target}/telemetry` : `http://${target}/telemetry`;
+      const url = target.startsWith('http') || target.startsWith('/')
+        ? target 
+        : `http://${target}/telemetry`;
       const res = await fetch(url, { signal: controller.signal });
       clearTimeout(timeoutId);
       if (res.ok) {
@@ -26,8 +28,8 @@ export async function fetchESP32Telemetry(deviceIp?: string): Promise<SoilTeleme
           
           // Industrial Deadband Filter (Noise Gate):
           // Real-world capacitive probes have +/- 2-3% natural AC/USB electrical noise.
-          // Lock the reading rock-solid; only update when there is a genuine physical change (>= 4.5%).
-          if (Math.abs(rawM - lastDeliveredMoisture) >= 4.5) {
+          // Lock the reading rock-solid; only update when there is a genuine physical change (>= 2%).
+          if (Math.abs(rawM - lastDeliveredMoisture) >= 2.0) {
             lastDeliveredMoisture = Math.round(rawM);
           }
           

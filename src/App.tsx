@@ -53,9 +53,9 @@ export function App() {
   });
 
   const [telemetry, setTelemetry] = useState<SoilTelemetry>({
-    moisturePercent: 28.5,
-    temperatureC: 31.5,
-    humidityPercent: 66.5,
+    moisturePercent: 48.0,
+    temperatureC: 26.0,
+    humidityPercent: 62.0,
     soilPH: 6.8,
     timestamp: new Date().toLocaleTimeString(),
     isSimulated: true
